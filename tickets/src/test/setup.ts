@@ -27,6 +27,8 @@ global.signin = () => {
 
 let mongo: any;
 
+jest.mock('../events/nats-wrapper');
+
 beforeAll(async () => {
   process.env.JWT_KEY = 'testkey';
   mongo = await MongoMemoryServer.create();
@@ -37,6 +39,7 @@ beforeAll(async () => {
 beforeEach(async () => {
   const collections = await mongoose.connection.db.collections();
   await Promise.all(collections.map((c) => c.deleteMany({})));
+  jest.clearAllMocks();
 });
 
 afterAll(async () => {

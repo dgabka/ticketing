@@ -2,6 +2,7 @@ import request from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../app';
 import { Ticket } from '../../models/ticket';
+import { natsWrapper } from '../../events/nats-wrapper';
 
 const id = new mongoose.Types.ObjectId().toHexString();
 
@@ -88,4 +89,24 @@ it('returns updated ticket with valid inputs', async () => {
     .send(ticketUpdate);
   expect(res.status).toEqual(200);
   expect(res.body).toMatchObject(ticketUpdate);
+});
+
+it('should publish an event', async () => {
+  const ticket = await Ticket.build({
+    title: 'title',
+    price: 10,
+    userId: '1',
+  }).save();
+
+  const ticketUpdate = {
+    title: 'new title',
+    price: 30,
+  };
+
+  let res = await request(app)
+    .put(`/api/tickets/${ticket._id}`)
+    .set('Cookie', signin())
+    .send(ticketUpdate);
+
+  expect(natsWrapper.client.publish).toHaveBeenCalled();
 });
