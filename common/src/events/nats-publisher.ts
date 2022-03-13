@@ -7,7 +7,7 @@ export abstract class NatsPublisher<T extends Event> {
   constructor(private client: Stan) {}
 
   publish(data: T['data']) {
-    this.client.publish(this.subject, data, () => {
+    this.client.publish(this.subject, JSON.stringify(data), () => {
       console.log(`Event published to ${this.subject.toString()}`);
     });
   }

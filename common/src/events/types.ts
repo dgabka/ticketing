@@ -1,7 +1,8 @@
 export enum Subjects {
   TicketCreated = 'ticket:created',
   TicketUpdated = 'ticket:updated',
-  OrderUpdated = 'order:updated',
+  OrderCreated = 'order:created',
+  OrderCancelled = 'order:cancelled',
 }
 
 export interface Event {
@@ -26,5 +27,36 @@ export interface TicketUpdatedEvent extends Event {
     title: string;
     price: number;
     userId: string;
+  };
+}
+
+export enum OrderStatus {
+  Created = 'created',
+  Cancelled = 'cancelled',
+  AwaitingPayment = 'awaiting:payment',
+  Complete = 'complete',
+}
+
+export interface OrderCreatedEvent extends Event {
+  subject: Subjects.OrderCreated;
+  data: {
+    id: string;
+    status: OrderStatus;
+    userId: string;
+    expiresAt: string;
+    ticket: {
+      id: string;
+      price: number;
+    };
+  };
+}
+
+export interface OrderCancelledEvent extends Event {
+  subject: Subjects.OrderCancelled;
+  data: {
+    id: string;
+    ticket: {
+      id: string;
+    };
   };
 }

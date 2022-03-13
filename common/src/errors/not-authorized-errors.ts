@@ -4,7 +4,7 @@ export class NotAuthorizedError extends CustomError {
   statusCode: number = 401;
 
   constructor() {
-    super('Not authorized');
+    super('Not Authorized');
     Object.setPrototypeOf(this, NotAuthorizedError.prototype);
   }
 
