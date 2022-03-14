@@ -1,5 +1,5 @@
-import express from 'express';
 import { currentUser } from '@dg-ticketing/common';
+import express from 'express';
 
 const router = express.Router();
 

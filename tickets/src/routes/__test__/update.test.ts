@@ -1,8 +1,8 @@
-import request from 'supertest';
 import mongoose from 'mongoose';
+import request from 'supertest';
 import { app } from '../../app';
+import { natsWrapper } from '../../events';
 import { Ticket } from '../../models/ticket';
-import { natsWrapper } from '../../events/nats-wrapper';
 
 const id = new mongoose.Types.ObjectId().toHexString();
 
@@ -68,6 +68,27 @@ it('returns a 400 if the user provides an invalid title or price', async () => {
       title: '',
       price: 20,
     });
+  expect(res.status).toEqual(400);
+});
+
+it('return 400 if ticket is reserved', async () => {
+  const ticket = await Ticket.build({
+    title: 'title',
+    price: 10,
+    userId: '1',
+  }).save();
+
+  ticket.set('orderId', '1234');
+  await ticket.save();
+
+  const res = await request(app)
+    .put(`/api/tickets/${ticket._id}`)
+    .set('Cookie', signin())
+    .send({
+      title: 'title',
+      price: 20,
+    });
+
   expect(res.status).toEqual(400);
 });
 

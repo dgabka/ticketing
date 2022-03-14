@@ -1,10 +1,9 @@
-import express, { Request, Response } from 'express';
 import {
   NotAuthorizedError,
   NotFoundError,
   requireAuth,
 } from '@dg-ticketing/common';
-
+import express, { Request, Response } from 'express';
 import { Order } from '../models/order';
 
 const router = express.Router();

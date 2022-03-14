@@ -1,15 +1,15 @@
-import express, { Request, Response } from 'express';
-import { body } from 'express-validator';
 import {
+  BadRequestError,
   NotAuthorizedError,
   NotFoundError,
   requireAuth,
   validateRequest,
 } from '@dg-ticketing/common';
-
-import { Ticket } from '../models/ticket';
-import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import { TicketUpdatedPublisher } from '../events';
 import { natsWrapper } from '../events/nats-wrapper';
+import { Ticket } from '../models/ticket';
 
 const router = express.Router();
 
@@ -31,10 +31,14 @@ router.put(
     if (ticket.userId !== req.currentUser?.id) {
       throw new NotAuthorizedError();
     }
+    if (ticket.orderId) {
+      throw new BadRequestError('Cannot edit a reserved ticket');
+    }
     ticket.set({ ...req.body });
     await ticket.save();
     new TicketUpdatedPublisher(natsWrapper.client).publish({
       id: ticket.id,
+      version: ticket.version,
       title: ticket.title,
       price: ticket.price,
       userId: ticket.userId,

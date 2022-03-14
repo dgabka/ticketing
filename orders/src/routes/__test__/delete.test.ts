@@ -1,13 +1,23 @@
-import request from 'supertest';
-import mongoose from 'mongoose';
-import { app } from '../../app';
-import { Order } from '../../models/order';
-import { Ticket } from '../../models/ticket';
 import { OrderStatus } from '@dg-ticketing/common';
-import { natsWrapper } from '../../events/nats-wrapper';
+import mongoose from 'mongoose';
+import request from 'supertest';
+import { app } from '../../app';
+import { natsWrapper } from '../../events';
+import { Order } from '../../models/order';
+import { Ticket, TicketDoc } from '../../models/ticket';
 
 const id = new mongoose.Types.ObjectId().toHexString();
 const path = '/api/orders';
+
+let ticket: TicketDoc;
+
+beforeEach(async () => {
+  ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    title: 'title',
+    price: 10,
+  }).save();
+});
 
 it('returns a 404 if provided id does not exits', async () => {
   const res = await request(app)
@@ -31,10 +41,6 @@ it('returns 401 if user is not authenticated', async () => {
 });
 
 it('should return 401 if user does not own a order', async () => {
-  const ticket = await Ticket.build({
-    title: 'title',
-    price: 10,
-  }).save();
   const order = await Order.build({
     ticket,
     userId: '2',
@@ -54,10 +60,6 @@ it('should return 401 if user does not own a order', async () => {
 });
 
 it('should cancel an order', async () => {
-  const ticket = await Ticket.build({
-    title: 'title',
-    price: 10,
-  }).save();
   const order = await Order.build({
     ticket,
     userId: '1',
@@ -75,10 +77,6 @@ it('should cancel an order', async () => {
 });
 
 it('should publish an event', async () => {
-  const ticket = await Ticket.build({
-    title: 'title',
-    price: 10,
-  }).save();
   const order = await Order.build({
     ticket,
     userId: '1',
@@ -86,7 +84,7 @@ it('should publish an event', async () => {
     expiresAt: new Date(),
   }).save();
 
-  const res = await request(app)
+  await request(app)
     .delete(`${path}/${order.id}`)
     .set('Cookie', signin())
     .send();

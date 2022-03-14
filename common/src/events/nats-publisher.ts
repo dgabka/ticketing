@@ -1,4 +1,4 @@
-import { Message, Stan } from 'node-nats-streaming';
+import { Stan } from 'node-nats-streaming';
 import { Event } from './types';
 
 export abstract class NatsPublisher<T extends Event> {
@@ -8,7 +8,7 @@ export abstract class NatsPublisher<T extends Event> {
 
   publish(data: T['data']) {
     this.client.publish(this.subject, JSON.stringify(data), () => {
-      console.log(`Event published to ${this.subject.toString()}`);
+      console.log(`Event published to: '${this.subject.toString()}'`);
     });
   }
 }

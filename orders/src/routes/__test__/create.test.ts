@@ -2,11 +2,21 @@ import { OrderStatus } from '@dg-ticketing/common';
 import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
-import { natsWrapper } from '../../events/nats-wrapper';
+import { natsWrapper } from '../../events';
 import { Order } from '../../models/order';
-import { Ticket } from '../../models/ticket';
+import { Ticket, TicketDoc } from '../../models/ticket';
 
 const path = '/api/orders';
+
+let ticket: TicketDoc;
+
+beforeEach(async () => {
+  ticket = await Ticket.build({
+    id: new mongoose.Types.ObjectId().toHexString(),
+    title: 'title',
+    price: 10,
+  }).save();
+});
 
 it('can only be accessed if the user is signed in', async () => {
   const res = await request(app).post(path).send({});
@@ -27,11 +37,6 @@ it('should return an error if ticket does not exist', async () => {
 });
 
 it('should return an error if ticket is reserved', async () => {
-  const ticket = await Ticket.build({
-    title: 'concert',
-    price: 20,
-  }).save();
-
   await Order.build({
     ticket,
     userId: new mongoose.Types.ObjectId().toHexString(),
@@ -50,12 +55,9 @@ it('should return an error if ticket is reserved', async () => {
 });
 
 it('returns an error if an invalid price is provided', async () => {
-  const res = await request(app)
-    .post('/api/orders')
-    .set('Cookie', signin())
-    .send({
-      price: -10,
-    });
+  const res = await request(app).post(path).set('Cookie', signin()).send({
+    price: -10,
+  });
 
   expect(res.status).toEqual(400);
 });
@@ -63,11 +65,6 @@ it('returns an error if an invalid price is provided', async () => {
 it('creates a order with valid inputs', async () => {
   let orders = await Order.find({});
   expect(orders.length).toEqual(0);
-
-  const ticket = await Ticket.build({
-    title: 'concert',
-    price: 20,
-  }).save();
 
   const res = await request(app).post(path).set('Cookie', signin()).send({
     ticketId: ticket._id,
@@ -86,11 +83,6 @@ it('creates a order with valid inputs', async () => {
 });
 
 it('should publish an event', async () => {
-  const ticket = await Ticket.build({
-    title: 'concert',
-    price: 20,
-  }).save();
-
   await request(app).post(path).set('Cookie', signin()).send({
     ticketId: ticket._id,
   });

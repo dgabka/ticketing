@@ -1,7 +1,7 @@
 import {
   NatsPublisher,
-  Subjects,
   OrderCreatedEvent,
+  Subjects,
 } from '@dg-ticketing/common';
 
 export class OrderCreatedPublisher extends NatsPublisher<OrderCreatedEvent> {

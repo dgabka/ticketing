@@ -1,6 +1,4 @@
 import express, { Request, Response } from 'express';
-import { NotFoundError, requireAuth } from '@dg-ticketing/common';
-
 import { Ticket } from '../models/ticket';
 
 const router = express.Router();

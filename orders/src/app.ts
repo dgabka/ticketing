@@ -1,13 +1,12 @@
-import express from 'express';
-import 'express-async-errors';
+import { currentUser, errorHandler, NotFoundError } from '@dg-ticketing/common';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-import { NotFoundError, errorHandler, currentUser } from '@dg-ticketing/common';
-
+import express from 'express';
+import 'express-async-errors';
 import { createOrderRouter } from './routes/create';
-import { getOneOrderRouter } from './routes/getOne';
-import { getAllOrderRouter } from './routes/getAll';
 import { deleteOrderRouter } from './routes/delete';
+import { getAllOrderRouter } from './routes/getAll';
+import { getOneOrderRouter } from './routes/getOne';
 
 const app = express();
 app.set('trust proxy', true);

@@ -1,12 +1,11 @@
-import express from 'express';
-import 'express-async-errors';
+import { currentUser, errorHandler, NotFoundError } from '@dg-ticketing/common';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-import { NotFoundError, errorHandler, currentUser } from '@dg-ticketing/common';
-
+import express from 'express';
+import 'express-async-errors';
 import { createTicketRouter } from './routes/create';
-import { getOneTicketRouter } from './routes/getOne';
 import { getAllTicketRouter } from './routes/getAll';
+import { getOneTicketRouter } from './routes/getOne';
 import { updateTicketRouter } from './routes/update';
 
 const app = express();

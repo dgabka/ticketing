@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-
 import { app } from './app';
-import { natsWrapper } from './events/nats-wrapper';
+import { initListeners, natsWrapper } from './events';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -26,6 +25,7 @@ const start = async () => {
       process.env.NATS_CLIENT_ID,
       process.env.NATS_URL
     );
+    initListeners();
     await mongoose.connect(process.env.MONGO_URI);
   } catch (e) {
     console.error(e);

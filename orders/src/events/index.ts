@@ -1,7 +1,7 @@
 import { Event, NatsListener } from '@dg-ticketing/common';
-import { natsWrapper } from './nats-wrapper';
 import { TicketCreatedListener } from './listeners/ticket-created-listener';
 import { TicketUpdatedListener } from './listeners/ticket-updated-listener';
+import { natsWrapper } from './nats-wrapper';
 
 const listeners: Array<NatsListener<Event>> = [];
 
@@ -11,3 +11,7 @@ export const initListeners = () => {
   listeners.forEach((l) => l.listen());
   console.log('Listeners initialized');
 };
+
+export * from './publishers/order-cancelled-publisher';
+export * from './publishers/order-created-publisher';
+export { natsWrapper };

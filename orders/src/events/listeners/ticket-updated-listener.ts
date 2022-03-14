@@ -12,9 +12,8 @@ export class TicketUpdatedListener extends NatsListener<TicketUpdatedEvent> {
   readonly queueGroupName: string = QUEUE_GROUP_NAME;
 
   onMessage = async (data: TicketUpdatedEvent['data'], msg: Message) => {
-    console.log(JSON.stringify(data));
-    const { id, title, price } = data;
-    const ticket = await Ticket.findById(id);
+    const { title, price } = data;
+    const ticket = await Ticket.findOnUpdatedEvent(data);
 
     if (!ticket) {
       throw new Error('Ticket not found');

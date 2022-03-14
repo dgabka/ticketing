@@ -1,14 +1,12 @@
-import express, { Request, Response } from 'express';
 import {
   NotAuthorizedError,
   NotFoundError,
   OrderStatus,
   requireAuth,
 } from '@dg-ticketing/common';
-
+import express, { Request, Response } from 'express';
+import { natsWrapper, OrderCancelledPublisher } from '../events';
 import { Order } from '../models/order';
-import { natsWrapper } from '../events/nats-wrapper';
-import { OrderCancelledPublisher } from '../events/publishers/order-cancelled-publisher';
 
 const router = express.Router();
 

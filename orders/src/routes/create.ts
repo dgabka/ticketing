@@ -1,6 +1,3 @@
-import express, { Request, Response } from 'express';
-import mongoose from 'mongoose';
-import { body } from 'express-validator';
 import {
   BadRequestError,
   NotFoundError,
@@ -8,11 +5,11 @@ import {
   requireAuth,
   validateRequest,
 } from '@dg-ticketing/common';
-
+import express, { Request, Response } from 'express';
+import { body } from 'express-validator';
+import { natsWrapper, OrderCreatedPublisher } from '../events';
 import { Order } from '../models/order';
 import { Ticket } from '../models/ticket';
-import { natsWrapper } from '../events/nats-wrapper';
-import { OrderCreatedPublisher } from '../events/publishers/order-created-publisher';
 
 const EXPIRATION_WINDOW = 15 * 60;
 
@@ -54,6 +51,7 @@ router.post(
 
     new OrderCreatedPublisher(natsWrapper.client).publish({
       id: order._id,
+      version: order.version,
       status: order.status,
       expiresAt: order.expiresAt.toISOString(),
       userId: order.userId,

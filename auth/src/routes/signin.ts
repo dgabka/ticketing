@@ -1,7 +1,7 @@
+import { BadRequestError, validateRequest } from '@dg-ticketing/common';
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import jwt from 'jsonwebtoken';
-import { BadRequestError, validateRequest } from '@dg-ticketing/common';
 import { User } from '../models/user';
 import { Password } from '../services/password';
 

@@ -1,24 +1,33 @@
 import { OrderStatus } from '@dg-ticketing/common';
+import mongoose from 'mongoose';
 import request from 'supertest';
 import { app } from '../../app';
 import { Order } from '../../models/order';
-import { Ticket } from '../../models/ticket';
+import { Ticket, TicketDoc } from '../../models/ticket';
 
-it('can fetch a list of orders', async () => {
-  const tickets = await Promise.all([
+let tickets: Array<TicketDoc>;
+
+beforeEach(async () => {
+  tickets = await Promise.all([
     Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
       title: 'title',
       price: 10,
     }).save(),
     Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
       title: 'title',
       price: 10,
     }).save(),
     Ticket.build({
+      id: new mongoose.Types.ObjectId().toHexString(),
       title: 'title',
       price: 10,
     }).save(),
   ]);
+});
+
+it('can fetch a list of orders', async () => {
   const orders = await Promise.all(
     tickets.map((ticket, index) =>
       Order.build({

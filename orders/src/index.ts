@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
-
 import { app } from './app';
-import { initListeners } from './events';
-import { natsWrapper } from './events/nats-wrapper';
+import { initListeners, natsWrapper } from './events';
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
