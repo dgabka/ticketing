@@ -14,7 +14,7 @@ interface OrderModel extends mongoose.Model<OrderDoc> {
   build(attrs: OrderAttrs): OrderDoc;
 }
 
-interface OrderDoc extends mongoose.Document {
+export interface OrderDoc extends mongoose.Document {
   userId: string;
   version: number;
   status: OrderStatus;

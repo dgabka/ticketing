@@ -3,6 +3,7 @@ export enum Subjects {
   TicketUpdated = 'ticket:updated',
   OrderCreated = 'order:created',
   OrderCancelled = 'order:cancelled',
+  ExpirationComplete = 'expiration:complete',
 }
 
 export interface Event {
@@ -62,5 +63,12 @@ export interface OrderCancelledEvent extends Event {
     ticket: {
       id: string;
     };
+  };
+}
+
+export interface ExpirationCompleteEvent extends Event {
+  subject: Subjects.ExpirationComplete;
+  data: {
+    orderId: string;
   };
 }

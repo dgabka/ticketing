@@ -16,10 +16,6 @@ spec:
         image: dgabka/ticketing-auth
         ports:
         - containerPort: 3000
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "1000m"
         env:
         - name: JWT_KEY
           valueFrom:
