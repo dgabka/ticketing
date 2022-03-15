@@ -21,6 +21,7 @@ beforeEach(async () => {
   listener = new OrderCancelledListener(natsWrapper.client);
   data = {
     id: new mongoose.Types.ObjectId().toHexString(),
+    version: 1,
     ticket: {
       id: ticket.id,
     },

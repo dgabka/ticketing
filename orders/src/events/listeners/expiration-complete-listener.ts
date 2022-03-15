@@ -22,6 +22,10 @@ export class ExpirationCompleteListener extends NatsListener<ExpirationCompleteE
       throw new Error('Order not found error');
     }
 
+    if (order.status === OrderStatus.Complete) {
+      throw new Error('Order already complete');
+    }
+
     order.set({
       status: OrderStatus.Cancelled,
     });
@@ -32,7 +36,8 @@ export class ExpirationCompleteListener extends NatsListener<ExpirationCompleteE
       ticket: {
         id: order.ticket.id,
       },
-      id: order._id,
+      version: order.version,
+      id: order.id,
     });
 
     msg.ack();
