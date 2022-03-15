@@ -10,7 +10,7 @@ import {
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { natsWrapper } from '../events';
-import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
+import { PaymentCreatedPublisher } from '../events';
 import { Order } from '../models/order';
 import { Payment } from '../models/payment';
 import { stripe } from '../stripe';
