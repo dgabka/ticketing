@@ -12,6 +12,5 @@ export const initListeners = () => {
   console.log('Listeners initialized');
 };
 
-export * from './publishers/order-cancelled-publisher';
-export * from './publishers/order-created-publisher';
+export * from './publishers/payment-created-publisher';
 export { natsWrapper };
