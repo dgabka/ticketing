@@ -11,6 +11,10 @@ spec:
       labels:
         app: payments
     spec:
+      initContainers:
+      - name: init-wait-for-nats
+        image: alpine
+        command: ["/bin/sh", "-c", "for i in $(seq 1 300); do nc -zvw1 nats-srv 4222 && exit 0 || sleep 3; done; exit 1"]
       containers:
       - name: payments
         image: dgabka/ticketing-payments
